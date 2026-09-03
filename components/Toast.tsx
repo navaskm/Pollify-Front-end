@@ -1,0 +1,44 @@
+"use client"
+
+import React, { createContext, useContext, useState, useCallback } from "react";
+import { CheckCircle2, AlertCircle } from "lucide-react";
+import { toastStyles as s } from "@/public/style/style";
+import { Toast, ToastFunction } from "@/utils/types";
+
+const ToastCtx = createContext<ToastFunction>(() => {});
+export const useToast = () => useContext(ToastCtx);
+
+
+export function ToastProvider({ children }:{children: React.ReactNode}) {
+
+  const [toasts, setToasts] = useState<Toast[]>([]);
+
+  const toast = useCallback<ToastFunction>((message, type = "success") => {
+    const id = `${Date.now()}-${Math.random()}`;
+    setToasts((t) => [...t, { id, message, type }]);
+    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 2600);
+  }, []);
+
+  return (
+    <ToastCtx.Provider value={toast}>
+      {children}
+      <div className={s.container}>
+        {toasts.map((t) => (
+          <div
+            key={t.id}
+            className={`${s.toastBase} ${
+              t.type === "error" ? s.toastError : s.toastSuccess
+            }`}
+          >
+            {t.type === "error" ? (
+              <AlertCircle size={16} />
+            ) : (
+              <CheckCircle2 size={16} />
+            )}
+            {t.message}
+          </div>
+        ))}
+      </div>
+    </ToastCtx.Provider>
+  );
+}
