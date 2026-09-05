@@ -1,7 +1,17 @@
 import { filterBarStyles as s } from "@/public/style/style";
 import { Image, List, MessageSquare, Scale, Sparkles, Star, X } from "lucide-react";
+import { PollFilter, PollType } from "@/utils/types";
 
-export const TYPE_META = {
+type Filter = {
+  key: PollFilter;
+  label: string;
+  Icon: React.ElementType;
+}
+
+export const TYPE_META: Record<
+  PollType,
+  { label: string; Icon: React.ElementType }
+> = {
   yesno: { label: "Yes / No", Icon: Scale },
   single: { label: "Single Choice", Icon: List },
   rating: { label: "Rating", Icon: Star },
@@ -9,10 +19,11 @@ export const TYPE_META = {
   open: { label: "Open Ended", Icon: MessageSquare },
 };
 
-export const FILTERS = [
+export const FILTERS: Filter[] = [
   { key: "all", label: "All", Icon: Sparkles },
+
   ...Object.entries(TYPE_META).map(([key, v]) => ({
-    key,
+    key: key as PollType,
     label: v.label,
     Icon: v.Icon,
   })),
@@ -22,8 +33,8 @@ const FilterBar = ({
   value,
   onChange
 }:{
-  value : string,
-  onChange: (key: string) => void
+  value : PollFilter,
+  onChange: (key: PollFilter) => void
 }) => {
   return (
     <div className={s.container}>

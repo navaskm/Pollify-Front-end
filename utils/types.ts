@@ -1,4 +1,5 @@
-import { ReactNode } from "react";
+import { ButtonHTMLAttributes } from "react";
+import { LucideIcon } from "lucide-react";
 
 export type User = {
   _id: string;
@@ -7,11 +8,6 @@ export type User = {
   username: string;
   avatar: string;
   bio: string;
-  // bookmarks: string[];
-  // following: string[];
-  // isVerified: boolean;
-  // createdAt: string;
-  // updatedAt: string;
 };
 
 export type VerifyOtpData = {
@@ -76,8 +72,17 @@ export type OtpStepProps = {
 };
 
 export type UIElementsAvatarProps = {
-  user?: User | null;
+  user?: {
+    name?: string;
+    avatar?: string;
+  } | null;
   className?: string;
+};
+
+export type UIElementsButtonVariant = "primary" | "ghost" | "danger";
+
+export type UIElementsButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: UIElementsButtonVariant;
 };
 
 export type NotificationType = {
@@ -113,7 +118,8 @@ export type ToastFunction = (
   type?: ToastType
 ) => void;
 
-export type PollType = "single" | "yesno" | "rating" | "image" | "open" | "all";
+export type PollType = "single" | "yesno" | "rating" | "image" | "open";
+export type PollFilter = "all" | "following" | PollType;
 
 type PollOption = {
   text: string;
@@ -157,4 +163,121 @@ export type Poll = {
   results: PollResult[];
   myVote: string | number | null;
   isBookmarked: boolean;
+  saves: number;
+  comments: number;
+};
+
+export type FeedType = "all" | "following";
+
+export type FeedTab = {
+  key: FeedType;
+  label: string;
+  Icon: React.ElementType;
+};
+
+export type PollCardProps = {
+  poll: Poll;
+  vote: (pollId: string, value: string | number) => Promise<void>;
+  unvote?: (pollId: string) => Promise<void>;
+  bookmark: (pollId: string) => Promise<void>;
+
+  edit?: (
+    pollId: string,
+    data: {
+      question: string;
+      category: string;
+    }
+  ) => Promise<void>;
+
+  close?: (pollId: string) => Promise<void>;
+  remove?: (pollId: string) => Promise<void>;
+  owner?: boolean;
+};
+
+export type PollVoteProps = {
+  poll: Poll;
+  onVote: (value: string | number) => void | Promise<void>;
+  onUnvote?: () => void | Promise<void>;
+};
+
+export type Comment = {
+  _id: string;
+  poll: string;
+  user: {
+    _id: string;
+    name: string;
+    username: string;
+    avatar: string;
+  };
+  parent: string | null;
+  text: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CommentItemProps = {
+  c: Comment;
+  replies: Comment[];
+  meId?: string;
+  onReply: (commentId: string, text: string) => Promise<void>;
+  onDelete: (commentId: string) => Promise<void>;
+};
+
+export type PollResultsProps = {
+  poll: Poll;
+  onUnvote?: () => void | Promise<void>;
+};
+
+export type VersusBarProps = {
+  results: PollResult[];
+  myVote: string | number | null;
+  total: number;
+  onUnvote?: () => void | Promise<void>;
+};
+
+export type ResultBarProps = {
+  label: string;
+  percent: number;
+  highlight: boolean;
+  winner: boolean;
+  onClick?: () => void;
+};
+
+export type PollListPageProps = {
+  endpoint: string;
+  title: string;
+  emptyTitle: string;
+  emptyText: string;
+  EmptyIcon: LucideIcon;
+};
+
+export type PublicProfileData = {
+  user: {
+    _id: string;
+    name: string;
+    username: string;
+    avatar: string;
+    bio: string;
+  };
+  isFollowing: boolean;
+  isMe: boolean;
+  stats: {
+    created: number;
+    voted: number;
+    followers: number;
+    following: number;
+  };
+  polls: Poll[];
+};
+
+export type PollAnalytics = {
+  poll: Poll;
+  comments: number;
+};
+
+export type StatCardProps = {
+  Icon: LucideIcon;
+  label: string;
+  value: number;
+  color: string;
 };

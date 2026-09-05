@@ -1,13 +1,13 @@
 import { uiElementStyles as s } from "@/public/style/style";
-import { UIElementsAvatarProps } from "@/utils/types";
+import { UIElementsAvatarProps, UIElementsButtonProps, UIElementsButtonVariant } from "@/utils/types";
 
-const btnStyles = {
+const btnStyles: Record<UIElementsButtonVariant, string> = {
   primary: s.btnPrimary,
   ghost: s.btnGhost,
   danger: s.btnDanger,
 };
 
-export function Button({ variant = "primary", className = "", ...props }) {
+export function Button({ variant = "primary", className = "", ...props }: UIElementsButtonProps) {
   return (
     <button
       className={`${s.btnBase} ${btnStyles[variant]} ${className}`}

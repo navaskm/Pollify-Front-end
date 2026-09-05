@@ -73,11 +73,6 @@ const layout = ({
             <span className={s.mobileLogoText}>Pollify</span>
           </div>
 
-          {/* <div className={s.headingWrapper}>
-            <h1 className={s.pageTitle}>{title}</h1>
-            {subtitle && <p className={s.subtitle}>{subtitle}</p>}
-          </div> */}
-
           {children}
         </div>
       </div>

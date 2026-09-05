@@ -35,12 +35,12 @@ export default function usePolls(path: string){
   useEffect( () => { load() }, [load]);
 
   // to replace the pll with other polls
-  const replace = (p) => {
-    setPolls((arr) => arr.map((x) => x._id === p ? p : x))
+  const replace = (p: Poll) => {
+    setPolls((arr) => arr.map((x) => x._id === p._id ? p : x))
   }
 
   // to vote on a poll or change your vote
-  const vote = async (id, value) => {
+  const vote = async (id: string, value: string | number) => {
     const wasVoted = polls.find(p => p._id === id)?.myVote !== null;
     await api.post(`/polls/${id}/vote`, {value});
 
@@ -55,14 +55,14 @@ export default function usePolls(path: string){
   const unVote = async (id:string) => {
     try {
 
-      api.delete( `/polls/${id}/vote`);
+      await api.delete( `/polls/${id}/vote`);
 
       const {data} = await api.get(`/polls/${id}?noview=true`);
       replace(data);
 
       toast("Vote removed");
       refresh()
-      
+
     } catch (error) {
       if(axios.isAxiosError(error)){
         toast(
@@ -89,13 +89,19 @@ export default function usePolls(path: string){
       )
     )
 
-    toast(data.isBookmarked ? "Saved" : "Remove from saved");
+    toast(data.bookmarked ? "Saved" : "Remove from saved");
 
     refresh();
   }
 
   // to edit a poll
-  const edit = async (id, payload) => {
+  const edit = async (
+    id: string,  
+    payload: {
+      question: string;
+      category: string;
+    }
+  ) => {
     await api.patch(`/polls/${id}`, payload);
     const {data} = await api.get(`/polls/${id}?noview=true`);
     replace(data);
