@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Image from "next/image";
 import { TrendingUp, Users, Zap } from "lucide-react";
 import { authLayoutStyles as s } from "@/public/style/style";
@@ -73,7 +74,9 @@ const layout = ({
             <span className={s.mobileLogoText}>Pollify</span>
           </div>
 
-          {children}
+          <Suspense fallback={null}>
+            {children}
+          </Suspense>
         </div>
       </div>
 

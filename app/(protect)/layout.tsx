@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { LayoutGrid, PlusSquare, PenLine, CheckCircle2, Bookmark, Search, X, Plus, Settings, LogOut, Loader2 } from 'lucide-react';
 import Link from 'next/link';
@@ -13,6 +13,8 @@ import { Avatar } from '@/components/UIElements';
 import { appStyles as a, layoutStyles as s } from "@/public/style/style";
 import useClickOutside from '@/hooks/useClickOutside';
 
+
+
 const NAV = [
   { to: "/dashboard", label: "Dashboard", Icon: LayoutGrid },
   { to: "/create-poll", label: "Create", Icon: PlusSquare },
@@ -21,7 +23,9 @@ const NAV = [
   { to: "/bookmarked-polls", label: "Saved", Icon: Bookmark },
 ];
 
-export default function ProtectedLayout({
+
+
+function ProtectedLayoutContent({
   children,
 }: {
   children: React.ReactNode;
@@ -182,5 +186,21 @@ export default function ProtectedLayout({
       </nav>
 
     </div>
+  );
+}
+
+
+
+export default function ProtectedLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <Suspense fallback={null}>
+      <ProtectedLayoutContent>
+        {children}
+      </ProtectedLayoutContent>
+    </Suspense>
   );
 }
