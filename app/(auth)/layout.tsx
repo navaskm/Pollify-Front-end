@@ -1,7 +1,11 @@
-import { Suspense } from "react";
+"use client";
+
+import { Suspense, useEffect } from "react";
 import Image from "next/image";
-import { TrendingUp, Users, Zap } from "lucide-react";
-import { authLayoutStyles as s } from "@/public/style/style";
+import { Loader2, TrendingUp, Users, Zap } from "lucide-react";
+import { authLayoutStyles as s, appStyles as a } from "@/public/style/style";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 const STATS = [
   { Icon: Users, value: "50K+", label: "Community members" },
@@ -14,6 +18,27 @@ const layout = ({
 }: {
   children: React.ReactNode;
 }) => {
+
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace("/dashboard");
+    }
+  }, [loading, user, router]);
+
+  if (loading || user) {
+    return (
+      <div className={a.loadingContainer}>
+        <Loader2
+          className={a.loadingSpinner}
+          size={32}
+        />
+      </div>
+    );
+  };
+
   return (
     <div className={s.container}>
       <div className={s.leftPanel}>

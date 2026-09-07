@@ -50,7 +50,7 @@ function ProtectedLayoutContent({
 
   useClickOutside(userRef, () => setUserOpen(false), userOpen)
 
-  if (loading) {
+  if (loading || !user) {
     return (
       <div className={a.loadingContainer}>
         <Loader2
@@ -60,10 +60,6 @@ function ProtectedLayoutContent({
       </div>
     );
   };
-
-  if (!user) {
-    return null;
-  }
 
   return (
     <div className={s.container}>
