@@ -28,15 +28,6 @@ export function AuthButton({ className = "", ...props }) {
   );
 }
 
-export function Field({ label, className = "", ...props }) {
-  return (
-    <label className="block">
-      {label && <span className={s.fieldLabel}>{label}</span>}
-      <input className={`${inputCls} ${className}`} {...props} />
-    </label>
-  );
-}
-
 export function Avatar({ user, className = "w-10 h-10" }: UIElementsAvatarProps) {
   
   if (user?.avatar) {

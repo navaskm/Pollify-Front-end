@@ -278,6 +278,6 @@ export type PollAnalytics = {
 export type StatCardProps = {
   Icon: LucideIcon;
   label: string;
-  value: number;
+  value: number | string;
   color: string;
 };
