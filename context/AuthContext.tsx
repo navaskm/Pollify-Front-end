@@ -50,11 +50,8 @@ export function AuthProvider({children}: { children: ReactNode }){
   };
 
   // TO REGISTER A USER
-  // const register = async (formateData: FormData) => {
-  //   (await api.post("/auth/register", formateData)).data;
-  // };
   const register = async (formData: FormData) => {
-    await api.post("/auth/register", formData);
+    (await api.post("/auth/register", formData)).data;
   };
 
   // TO VERIFY OTP
