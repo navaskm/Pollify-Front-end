@@ -76,8 +76,6 @@ export type OtpStepProps = {
   onSubmit: (otp: string) => void | Promise<void>;
   onResend: () => void | Promise<string | void>;
   submitText?: string;
-  /** Shown when email could not be delivered (e.g. SMTP blocked on host) */
-  fallbackOtp?: string;
 };
 
 export type UIElementsAvatarProps = {

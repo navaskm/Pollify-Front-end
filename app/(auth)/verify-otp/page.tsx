@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import OtpStep from "@/components/OtpStep";
 import { verifyOtpStyles as s, authLayoutStyles as a } from "@/public/style/style";
@@ -14,13 +13,6 @@ const page = () => {
   const searchParams = useSearchParams();
 
   const email = searchParams.get("email");
-  const [fallbackOtp, setFallbackOtp] = useState("");
-
-  useEffect(() => {
-    if (!email) return;
-    const stored = sessionStorage.getItem(`pollify_otp:${email}`);
-    if (stored) setFallbackOtp(stored);
-  }, [email]);
 
   if (!email) {
     router.replace("/signup");
@@ -30,20 +22,10 @@ const page = () => {
   // to submit otp
   const submit = async (otp: string) => {
     await verifyOtp({email, otp})
-    sessionStorage.removeItem(`pollify_otp:${email}`);
     router.push("/login?verified=true");
   };
 
-  const handleResend = async () => {
-    const data = await resendOtp(email);
-    if (data?.otp) {
-      sessionStorage.setItem(`pollify_otp:${email}`, data.otp);
-      setFallbackOtp(data.otp);
-      return data.otp;
-    }
-    sessionStorage.removeItem(`pollify_otp:${email}`);
-    setFallbackOtp("");
-  };
+  const handleResend = async () => await resendOtp(email);
 
   return (
     <>
@@ -57,7 +39,6 @@ const page = () => {
         onSubmit={submit}
         onResend={handleResend}
         submitText="Verify email ➔"
-        fallbackOtp={fallbackOtp}
       />
       <p className={s.footerText}>
         Wrong email?{" "}
