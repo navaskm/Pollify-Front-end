@@ -42,12 +42,19 @@ type AuthStatus = {
   bookmarked: number;
 };
 
+export type RegisterResponse = {
+  needVerification: boolean;
+  email: string;
+  emailSent?: boolean;
+  otp?: string;
+};
+
 export type AuthContextType = {
   user: User | null;
   status: AuthStatus;
   loading: boolean;
 
-  register: (formateData: FormData) => Promise<void>;
+  register: (formateData: FormData) => Promise<RegisterResponse>;
   verifyOtp: (payload: VerifyOtpData) => Promise<any>;
   resendOtp: (email: string) => Promise<any>;
   login: (payload: LoginData) => Promise<void>;
@@ -67,8 +74,10 @@ export type AuthContextType = {
 export type OtpStepProps = {
   email: string;
   onSubmit: (otp: string) => void | Promise<void>;
-  onResend: () => void | Promise<void>;
+  onResend: () => void | Promise<string | void>;
   submitText?: string;
+  /** Shown when email could not be delivered (e.g. SMTP blocked on host) */
+  fallbackOtp?: string;
 };
 
 export type UIElementsAvatarProps = {

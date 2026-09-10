@@ -11,6 +11,7 @@ export default function OtpStep({
   onSubmit,
   onResend,
   submitText = "Verify",
+  fallbackOtp,
 }: OtpStepProps) {
 
   const [otp, setOtp] = useState("");
@@ -18,6 +19,11 @@ export default function OtpStep({
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [resending, setResending] = useState(false);
+  const [hintOtp, setHintOtp] = useState(fallbackOtp || "");
+
+  useEffect(() => {
+    setHintOtp(fallbackOtp || "");
+  }, [fallbackOtp]);
 
   useEffect(() => {
     if (left <= 0) return;
@@ -47,7 +53,10 @@ export default function OtpStep({
     setError("");
     setResending(true);
     try {
-      await onResend();
+      const result = await onResend();
+      if (typeof result === "string" && result) {
+        setHintOtp(result);
+      }
       setOtp("");
       setLeft(60);
     } catch {
@@ -69,6 +78,12 @@ export default function OtpStep({
           <p className={s.emailValue}>{email}</p>
         </div>
       </div>
+
+      {hintOtp && (
+        <div className={s.errorBox} style={{ borderColor: "#c7d2fe", background: "#eef2ff", color: "#3730a3" }}>
+          Email delivery is delayed. Use this code: <strong>{hintOtp}</strong>
+        </div>
+      )}
 
       {/* Error */}
       {error && <div className={s.errorBox}>{error}</div>}

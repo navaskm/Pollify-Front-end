@@ -51,14 +51,23 @@ export function AuthProvider({children}: { children: ReactNode }){
 
   // TO REGISTER A USER
   const register = async (formData: FormData) => {
-    (await api.post("/auth/register", formData)).data;
+    const { data } = await api.post("/auth/register", formData);
+    return data as {
+      needVerification: boolean;
+      email: string;
+      emailSent?: boolean;
+      otp?: string;
+    };
   };
 
   // TO VERIFY OTP
   const verifyOtp = (payload: VerifyOtpData) => api.post("/auth/verify-otp", payload);
 
   // TO RESEND THE OTP
-  const resendOtp = (email: string) => api.post("/auth/resend-otp", {email});
+  const resendOtp = async (email: string) => {
+    const { data } = await api.post("/auth/resend-otp", { email });
+    return data as { msg?: string; emailSent?: boolean; otp?: string };
+  };
 
   // TO LOGIN
   const login = async (payload: LoginData) => {

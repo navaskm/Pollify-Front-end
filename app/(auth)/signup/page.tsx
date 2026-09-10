@@ -52,14 +52,30 @@ const page = () => {
       Object.entries(form).forEach(([k, v]) => data.append(k, v));
       if(image) data.append("image", image);
 
-      await register(data);
+      const result = await register(data);
+
+      if (result?.otp) {
+        sessionStorage.setItem(`pollify_otp:${form.email}`, result.otp);
+      } else {
+        sessionStorage.removeItem(`pollify_otp:${form.email}`);
+      }
+
       router.push(`/verify-otp?email=${encodeURIComponent(form.email)}`);
 
     } catch (error) {
       console.log("UNKNOWN ERROR:", error);
-      if(axios.isAxiosError(error)){
-        setError(error.response?.data?.message || error.response?.data.msg || "Signup Failed");
-      };
+      if (axios.isAxiosError(error)) {
+        const payload = error.response?.data as { message?: string; msg?: string } | undefined;
+        setError(
+          payload?.message ||
+            payload?.msg ||
+            (error.code === "ECONNABORTED" ? "Request timed out. Please try again." : "") ||
+            error.message ||
+            "Signup Failed"
+        );
+      } else {
+        setError("Signup Failed");
+      }
     } finally {
       setBusy(false);
     };
